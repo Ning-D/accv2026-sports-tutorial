@@ -23,8 +23,8 @@ into fragments. Generators live in `tools/`; the athlete ones run in the `worldp
 
 ```bash
 PY=/home/ding/miniconda/envs/worldpose/bin/python
-# shot (MOR vs POR), three-quarter view facing the camera
-$PY tools/worldpose_lowpoly.py --seq MOR_POR_181952 --player 4 --frame 520 --face -15 --dissolve 0.68 --dir left --mirror --out assets/kicker.svg
+# in-stride strike (MOR vs POR), three-quarter view facing the camera
+$PY tools/worldpose_lowpoly.py --seq MOR_POR_182352 --player 8 --frame 420 --face -40 --dissolve 0.68 --dir right --seed 5 --out assets/kicker.svg
 # ball: truncated icosahedron with trailing fragments (plain python3)
 python3 tools/ball_lowpoly.py --out assets/ball.svg --trail right
 ```
@@ -35,7 +35,7 @@ coarseness in metres; `--dissolve` 0.5 (many fragments) … 1 (none); `--dir lef
 `index.html` to the SVG size printed by the script.
 
 `tools/worldpose_scan.py` scores every (sequence, player, frame) for dive-like and kick-like poses; other good
-picks: kicks ARG_FRA_200043 21 1375, MOR_POR_182352 8 420.
+picks (in-stride strikes): FRA_MOR_220401 20 1980, ARG_FRA_181108 8 190, CRO_MOR_183903 5 635.
 `tools/lowpoly_athlete.py` is the earlier silhouette-based generator (YOLO on a broadcast frame), kept for reference.
 
 ## To update later
