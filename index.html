@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>From Perception to Reasoning: Learning Video Understanding Through Sports &mdash; ACCV 2026 Tutorial</title>
+  <meta name="description" content="ACCV 2026 half-day tutorial on sports video understanding: perception, event understanding, vision-language modeling, and tactical reasoning. Osaka, December 15, 2026." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏸</text></svg>">
+  <style>
+    /* ── Reset & base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    :root {
+      --g900: #1f3d12;
+      --g800: #2f5a1c;
+      --g700: #3d7523;
+      --g600: #4c8c2b;   /* proposal headergreen */
+      --g300: #a5d68a;
+      --g200: #cfe8c2;
+      --g100: #e2efdf;
+      --g50:  #f1f7ef;
+      --amber-bg: #fff8e1;
+      --amber-bd: #ffe082;
+      --amber: #ffb300;
+      --ink: #222;
+      --muted: #555;
+    }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--ink);
+      background: #fff;
+    }
+    a { color: var(--g700); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Navbar ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--g900);
+      display: flex; justify-content: center; gap: 2rem;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    nav a {
+      color: var(--g100); font-weight: 600; font-size: 0.9rem;
+      letter-spacing: 0.03em; text-transform: uppercase;
+    }
+    nav a:hover { color: #fff; text-decoration: none; }
+
+    /* ── Hero ── */
+    header {
+      background: linear-gradient(135deg, var(--g900) 0%, var(--g800) 55%, var(--g600) 100%);
+      color: #fff; text-align: center;
+      padding: 4rem 1.5rem 3rem;
+    }
+    header .venue {
+      font-size: 1rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--g300); margin-bottom: 1rem;
+    }
+    header h1 {
+      font-size: clamp(1.5rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.25;
+      max-width: 860px; margin: 0 auto 1.5rem;
+    }
+    header .meta { color: var(--g200); font-size: 0.95rem; margin-bottom: 2rem; }
+    header .meta strong { color: #fff; }
+    .author-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-bottom: 1.5rem; }
+    .author-pill { text-align: center; }
+    .author-pill .name { font-size: 1.05rem; font-weight: 700; color: #fff; }
+    .author-pill .affil { font-size: 0.85rem; color: var(--g300); }
+    .hero-links a {
+      display: inline-block; margin: 0 0.4rem; padding: 0.45rem 1rem;
+      border: 1px solid var(--g300); border-radius: 999px;
+      color: #fff; font-weight: 600; font-size: 0.9rem;
+    }
+    .hero-links a:hover { background: rgba(255,255,255,0.12); text-decoration: none; }
+
+    /* ── Sections ── */
+    section { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
+    section + section { border-top: 1px solid var(--g100); }
+    h2 {
+      font-size: 1.5rem; font-weight: 800; color: var(--g900);
+      margin-bottom: 1.25rem; padding-bottom: 0.4rem;
+      border-bottom: 3px solid var(--g600); display: inline-block;
+    }
+    h3 { font-size: 1.1rem; font-weight: 700; color: var(--g800); margin: 1.25rem 0 0.5rem; }
+    p { margin-bottom: 0.9rem; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Pillars ── */
+    .pillars {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 1.25rem; margin: 1.5rem 0;
+    }
+    .pillar {
+      background: var(--g50); border-left: 4px solid var(--g600);
+      border-radius: 6px; padding: 1rem 1.25rem;
+    }
+    .pillar .num { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; color: var(--g600); }
+    .pillar strong { display: block; color: var(--g900); margin-bottom: 0.3rem; }
+    .pillar p { font-size: 0.88rem; margin: 0; color: #444; }
+
+    .slides-note {
+      max-width: 900px; margin: 1.5rem auto 0; padding: 0.9rem 1.25rem;
+      background: var(--amber-bg); border: 1px solid var(--amber-bd);
+      border-left: 4px solid var(--amber); border-radius: 6px;
+      font-size: 0.95rem; color: #5d4037;
+    }
+    .slides-note a { color: var(--g900); }
+
+    /* ── Audience / objectives ── */
+    .objectives {
+      list-style: none; padding: 0; margin: 1rem 0;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem;
+    }
+    .objectives li {
+      background: var(--g50); border-radius: 6px; padding: 0.75rem 1rem;
+      font-size: 0.9rem; display: flex; gap: 0.6rem; align-items: flex-start;
+    }
+    .objectives li::before { content: "✓"; color: var(--g600); font-weight: 800; flex-shrink: 0; }
+    .objectives li strong { color: var(--g900); }
+
+    /* ── Schedule ── */
+    .table-wrap { overflow-x: auto; }
+    .schedule-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .schedule-table thead tr { background: var(--g600); color: #fff; }
+    .schedule-table thead th { padding: 0.75rem 1rem; text-align: left; font-weight: 700; }
+    .schedule-table tbody tr:nth-child(even) { background: var(--g50); }
+    .schedule-table tbody tr:nth-child(odd)  { background: #fff; }
+    .schedule-table tbody tr.break-row { background: var(--g100); font-style: italic; }
+    .schedule-table td { padding: 0.65rem 1rem; vertical-align: top; }
+    .schedule-table td.time { white-space: nowrap; font-weight: 600; color: var(--g700); width: 90px; }
+    .schedule-table td.presenter { white-space: nowrap; width: 140px; color: var(--muted); }
+    .schedule-table ul { margin: 0.3rem 0 0 1.1rem; padding: 0; color: var(--muted); }
+    .schedule-table li { margin-bottom: 0.15rem; }
+    .talk-title { font-weight: 700; color: var(--g900); }
+    .sched-note { font-size: 0.85rem; color: var(--muted); margin-top: 0.75rem; }
+
+    /* ── Organizer cards ── */
+    .organizer-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem; margin-top: 1.5rem;
+    }
+    .organizer-card {
+      border: 1px solid var(--g200); border-radius: 10px;
+      padding: 1.5rem 1.25rem; text-align: center; transition: box-shadow 0.2s;
+    }
+    .organizer-card:hover { box-shadow: 0 4px 18px rgba(47,90,28,0.15); }
+    .organizer-avatar {
+      width: 96px; height: 96px; border-radius: 50%; object-fit: cover;
+      display: block; margin: 0 auto 1rem; border: 3px solid var(--g100);
+    }
+    .organizer-card h3 { margin: 0 0 0.2rem; font-size: 1rem; color: var(--g900); }
+    .organizer-card .org-affil { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.4rem; }
+    .organizer-card .org-links { font-size: 0.8rem; }
+    .organizer-card .org-links a { margin: 0 0.3rem; }
+    .organizer-card .org-bio {
+      margin-top: 0.75rem; font-size: 0.82rem; color: var(--muted);
+      text-align: left; line-height: 1.5;
+    }
+
+    /* ── Resources ── */
+    .res-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem; margin-top: 1rem;
+    }
+    .res-card {
+      border: 1px solid var(--g200); border-radius: 8px; padding: 1rem 1.25rem; font-size: 0.9rem;
+    }
+    .res-card strong { display: block; color: var(--g900); margin-bottom: 0.3rem; }
+    .res-card .soon {
+      display: inline-block; font-size: 0.75rem; font-weight: 600; padding: 0.1rem 0.5rem;
+      border-radius: 4px; background: var(--amber-bg); border: 1px solid var(--amber-bd); color: #7a5a00;
+    }
+    ul.links { padding-left: 1.25rem; font-size: 0.9rem; color: #444; }
+    ul.links li { margin-bottom: 0.35rem; }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--g900); color: var(--g300); text-align: center;
+      padding: 1.5rem 1rem; font-size: 0.82rem;
+    }
+    footer a { color: var(--g200); }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      nav { gap: 1rem; font-size: 0.8rem; flex-wrap: wrap; }
+      header { padding: 2.5rem 1rem 2rem; }
+      .schedule-table td.time, .schedule-table td.presenter { width: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+  <a href="#about">About</a>
+  <a href="#audience">Audience</a>
+  <a href="#schedule">Schedule</a>
+  <a href="#organizers">Organizers</a>
+  <a href="#materials">Materials</a>
+</nav>
+
+<!-- ── Hero ── -->
+<header>
+  <div class="venue">ACCV 2026 Tutorial &mdash; Half-Day</div>
+  <h1>From Perception to Reasoning: Learning Video Understanding Through Sports</h1>
+  <div class="author-row">
+    <div class="author-pill">
+      <div class="name">Ning Ding</div>
+      <div class="affil">Nagoya Institute of Technology</div>
+    </div>
+    <div class="author-pill">
+      <div class="name">Keisuke Fujii</div>
+      <div class="affil">Nagoya University</div>
+    </div>
+    <div class="author-pill">
+      <div class="name">Toru Tamaki</div>
+      <div class="affil">Nagoya Institute of Technology</div>
+    </div>
+  </div>
+  <div class="meta">
+    <strong>Monday, December 15, 2026 &middot; Morning &middot; Room 1008</strong><br>
+    Osaka International Convention Center, Osaka, Japan
+  </div>
+  <div class="hero-links">
+    <a href="https://accv2026.org/tutorials/">ACCV 2026 tutorials page &rarr;</a>
+  </div>
+</header>
+
+<!-- ── Slides note ── -->
+<div class="slides-note">
+  Slides, the reading list, and the resource sheet will be posted here before the tutorial.
+</div>
+
+<!-- ── About ── -->
+<section id="about">
+  <h2>About</h2>
+  <p>
+    Sports videos are rich in visual and temporal information: player motion, object trajectories, spatial
+    formations, interactions, tactics, and long-range event dependencies. Unlike many generic video
+    understanding settings, sports videos are <em>highly structured</em>: the court or field geometry is
+    known, the number of agents is limited, and the rules define meaningful events and state transitions.
+    At the same time they remain hard because of fast motion, occlusion, camera movement, tiny objects such
+    as balls and shuttlecocks, and the need to reason over long temporal contexts.
+  </p>
+  <p>
+    This tutorial presents sports video as a <strong>structured benchmark for video understanding</strong>.
+    It walks through the full pipeline, from perception to language-based reasoning, and shows how each
+    stage connects to the next. Beyond the application itself, we frame sports as a stress-test for general
+    video understanding whose structured, multi-agent, long-context nature surfaces problems and solutions
+    that transfer back to broader video-language reasoning.
+  </p>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="num">STAGE 1</div>
+      <strong>Perception</strong>
+      <p>Player and ball detection and tracking, identification and re-ID, pose estimation, court and field calibration, top-down minimap mapping.</p>
+    </div>
+    <div class="pillar">
+      <div class="num">STAGE 2</div>
+      <strong>Event Understanding</strong>
+      <p>Temporal action spotting, fine-grained actions and player interactions, and game state reconstruction from low-level signals.</p>
+    </div>
+    <div class="pillar">
+      <div class="num">STAGE 3</div>
+      <strong>Vision-Language Modeling</strong>
+      <p>Dense captioning and commentary generation, grounding of players and events, sports video question answering, highlight and report generation.</p>
+    </div>
+    <div class="pillar">
+      <div class="num">STAGE 4</div>
+      <strong>Tactical Reasoning</strong>
+      <p>Tactical pattern discovery, multi-agent trajectory and outcome forecasting, and long-context reasoning over full matches.</p>
+    </div>
+  </div>
+
+  <p>
+    <strong>Keywords:</strong> sports video understanding &middot; structured video understanding &middot;
+    multimodal learning &middot; vision-language models &middot; video captioning &middot; video question
+    answering &middot; tactical reasoning &middot; long-context video understanding.
+  </p>
+</section>
+
+<!-- ── Audience ── -->
+<section id="audience">
+  <h2>Who Should Attend</h2>
+  <p>
+    The tutorial is designed to be accessible: it starts from foundational concepts and moves toward
+    advanced topics. A basic background in computer vision and machine learning is helpful. Familiarity
+    with video understanding, deep learning, or vision-language models is useful but not required.
+  </p>
+  <ul class="objectives">
+    <li><span><strong>CV researchers</strong> working on video understanding, event modeling, multimodal learning, and reasoning over structured visual data.</span></li>
+    <li><span><strong>PhD students</strong> seeking an accessible introduction to sports video analysis, from perception to language-based tasks.</span></li>
+    <li><span><strong>Multimodal AI researchers</strong> working on vision-language models, captioning, question answering, and long-context reasoning.</span></li>
+    <li><span><strong>Sports analytics community</strong> interested in tactical analysis, player behavior, and structured interpretation of sports video.</span></li>
+    <li><span><strong>Industry practitioners</strong> in sports broadcasting, video platforms, and AI products seeking practical tools for automated analysis.</span></li>
+    <li><span><strong>Anyone</strong> interested in connecting computer vision, multimodal learning, and reasoning through sports as a structured benchmark.</span></li>
+  </ul>
+  <p>Registration follows the ACCV passport system: conference attendees register for tutorials through the ACCV registration form. No separate registration is required.</p>
+</section>
+
+<!-- ── Schedule ── -->
+<section id="schedule">
+  <h2>Schedule</h2>
+  <p>Half-day program (about 3.5 hours) in seven parts with one break. Exact clock times will be posted once the ACCV program is finalized.</p>
+  <div class="table-wrap">
+  <table class="schedule-table">
+    <thead>
+      <tr><th>Duration</th><th>Topic</th><th>Presenter</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="time">25 min</td>
+        <td>
+          <span class="talk-title">Introduction: Why Sports Video?</span>
+          <ul>
+            <li>Why sports video matters for computer vision</li>
+            <li>Sports video as a structured benchmark for video understanding</li>
+            <li>Key tasks: perception, event understanding, vision-language modeling, and reasoning</li>
+          </ul>
+        </td>
+        <td class="presenter">Keisuke Fujii</td>
+      </tr>
+      <tr>
+        <td class="time">25 min</td>
+        <td>
+          <span class="talk-title">Perception: Turning Pixels into Who-Is-Where</span>
+          <ul>
+            <li>Player and ball detection and tracking</li>
+            <li>Player identification and re-ID</li>
+            <li>Player pose estimation</li>
+            <li>Court and field calibration with top-down (minimap) mapping</li>
+          </ul>
+        </td>
+        <td class="presenter">Ning Ding</td>
+      </tr>
+      <tr>
+        <td class="time">25 min</td>
+        <td>
+          <span class="talk-title">Event Understanding: From Motion to Meaning</span>
+          <ul>
+            <li>Temporal action spotting and event segmentation</li>
+            <li>Fine-grained action and player interaction modeling</li>
+            <li>Game state reconstruction (GSR)</li>
+          </ul>
+        </td>
+        <td class="presenter">Ning Ding</td>
+      </tr>
+      <tr>
+        <td class="time">25 min</td>
+        <td>
+          <span class="talk-title">Vision-Language Modeling: Teaching Models to Commentate</span>
+          <ul>
+            <li>Dense video captioning and play-by-play / live commentary generation</li>
+            <li>Visual and temporal grounding of players, events, and rules</li>
+            <li>Sports video question answering and reasoning</li>
+            <li>Highlight and game-report generation</li>
+          </ul>
+        </td>
+        <td class="presenter">Ning Ding</td>
+      </tr>
+      <tr class="break-row">
+        <td class="time">30 min</td>
+        <td>Break &mdash; attendees interact and discuss</td>
+        <td class="presenter">&mdash;</td>
+      </tr>
+      <tr>
+        <td class="time">25 min</td>
+        <td>
+          <span class="talk-title">Tactical Reasoning: Reading the Game, Calling the Next Play</span>
+          <ul>
+            <li>Tactical pattern discovery and team-strategy modeling</li>
+            <li>Multi-agent trajectory and play-outcome forecasting</li>
+            <li>Long-context temporal reasoning over full matches</li>
+          </ul>
+        </td>
+        <td class="presenter">Ning Ding</td>
+      </tr>
+      <tr>
+        <td class="time">25 min</td>
+        <td>
+          <span class="talk-title">Sports: The Stress-Test for General Video Understanding</span>
+          <ul>
+            <li>Limitations of generic video models on sports videos</li>
+            <li>Sports-driven solutions: tracking, action spotting, and trajectory forecasting</li>
+            <li>How sports benchmarks can advance general video understanding</li>
+          </ul>
+        </td>
+        <td class="presenter">Toru Tamaki</td>
+      </tr>
+      <tr>
+        <td class="time">30 min</td>
+        <td>
+          <span class="talk-title">Open Challenges: What Is Still Unsolved</span>
+          <ul>
+            <li>Data bottlenecks: scarce datasets and costly expert annotation</li>
+            <li>Generalization across sports and domains</li>
+            <li>Real-time systems and deployment</li>
+            <li>Open discussion and audience Q&amp;A</li>
+          </ul>
+        </td>
+        <td class="presenter">Keisuke Fujii</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="sched-note">Presenter assignment is tentative and may be adjusted before the tutorial.</p>
+</section>
+
+<!-- ── Organizers ── -->
+<section id="organizers">
+  <h2>Organizers</h2>
+  <div class="organizer-grid">
+
+    <div class="organizer-card">
+      <img class="organizer-avatar" src="assets/ding.jpg" alt="Ning Ding">
+      <h3>Ning Ding</h3>
+      <div class="org-affil">Assistant Professor, Nagoya Institute of Technology</div>
+      <div class="org-links">
+        <a href="https://orcid.org/0000-0002-3067-7341">ORCID</a> &middot;
+        <a href="mailto:ding.ning@nitech.ac.jp">Email</a>
+      </div>
+      <p class="org-bio">
+        Ning Ding received her Ph.D. in intelligent systems from Nagoya University in 2024 and is an
+        Assistant Professor at the Graduate School of Engineering, Nagoya Institute of Technology. Her
+        research covers interpretable sports action evaluation and sports video understanding, including
+        BFMD, a full-match badminton dataset for dense shot captioning (CVPR 2026 Workshops), and
+        Shot2Tactic-Caption for multi-scale tactical captioning (ACM MMSports 2025). She co-organizes the
+        Nagoya University Sports Machine Learning Workshop (2025, 2026). Primary contact.
+      </p>
+    </div>
+
+    <div class="organizer-card">
+      <img class="organizer-avatar" src="assets/fujii.png" alt="Keisuke Fujii">
+      <h3>Keisuke Fujii</h3>
+      <div class="org-affil">Associate Professor, Nagoya University</div>
+      <div class="org-links">
+        <a href="https://orcid.org/0000-0001-5487-4297">ORCID</a>
+      </div>
+      <p class="org-bio">
+        Keisuke Fujii received his Ph.D. from Kyoto University in 2014. After postdoctoral and research
+        scientist positions at Nagoya University and the RIKEN Center for Advanced Intelligence Project,
+        he joined Nagoya University, where he is an Associate Professor at the Graduate School of
+        Informatics. His research is interdisciplinary across machine learning, behavioral sciences, and
+        sports sciences. He is the author of <em>Machine Learning in Sports: Open Approach for Next Play
+        Analytics</em> (Springer, 2025) and the lead organizer of the Nagoya University Sports Machine
+        Learning Workshop (2025, 2026).
+      </p>
+    </div>
+
+    <div class="organizer-card">
+      <img class="organizer-avatar" src="assets/tamaki.png" alt="Toru Tamaki">
+      <h3>Toru Tamaki</h3>
+      <div class="org-affil">Professor, Nagoya Institute of Technology</div>
+      <div class="org-links">
+        <a href="https://orcid.org/0000-0001-9712-7777">ORCID</a>
+      </div>
+      <p class="org-bio">
+        Toru Tamaki received his Ph.D. in information engineering from Nagoya University in 2001. After
+        positions at Niigata University and Hiroshima University, he is a Professor at the Department of
+        Computer Science, Nagoya Institute of Technology, and was an associate researcher at ESIEE Paris
+        in 2015. His research interests include computer vision, image recognition, deep learning, and video
+        understanding. He has organized international workshops in conjunction with ACML 2019, PerCom 2019,
+        ACCV 2010, and ICCV 2009.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Materials ── -->
+<section id="materials">
+  <h2>Materials</h2>
+  <p>All materials will be released on this page so that attendees can continue exploring the topic after the conference.</p>
+  <div class="res-grid">
+    <div class="res-card">
+      <strong>Slides</strong>
+      PDF slides for each part of the tutorial. <span class="soon">Coming soon</span>
+    </div>
+    <div class="res-card">
+      <strong>Reading list</strong>
+      Curated papers on sports video perception, event understanding, captioning, question answering, tactical reasoning, and long-context video understanding. <span class="soon">Coming soon</span>
+    </div>
+    <div class="res-card">
+      <strong>Resource sheet</strong>
+      Links to representative datasets, benchmarks, public code, and project pages. <span class="soon">Coming soon</span>
+    </div>
+    <div class="res-card">
+      <strong>Open problems</strong>
+      A structured list of the open research problems discussed in the closing session. <span class="soon">After the tutorial</span>
+    </div>
+  </div>
+
+  <h3>Related events by the organizers</h3>
+  <ul class="links">
+    <li><a href="https://sites.google.com/g.sp.m.is.nagoya-u.ac.jp/nu-ml-sports-workshop-2026">Nagoya University Sports Machine Learning Workshop 2026</a></li>
+  </ul>
+
+  <h3>Contact</h3>
+  <p>Questions about the tutorial: <a href="mailto:ding.ning@nitech.ac.jp">ding.ning@nitech.ac.jp</a></p>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  ACCV 2026 Tutorial &middot; From Perception to Reasoning: Learning Video Understanding Through Sports<br>
+  December 15, 2026 &middot; Osaka International Convention Center &middot;
+  <a href="https://accv2026.org/">accv2026.org</a>
+</footer>
+
+</body>
+</html>
