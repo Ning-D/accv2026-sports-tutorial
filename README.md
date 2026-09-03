@@ -17,14 +17,24 @@ GitHub Pages rebuilds within about a minute of each push.
 
 ## Hero artwork
 
-`assets/athlete.svg` is a low-poly wireframe generated from a BFMD broadcast frame with
-`tools/lowpoly_athlete.py` (YOLO11 segmentation → Delaunay mesh → SVG). To regenerate from another frame:
+`assets/athlete.svg` is a low-poly wireframe of a **real player mesh from the WorldPose dataset**
+(SMPL ground truth, FIFA World Cup 2022 broadcast; ETH Zurich, ECCV 2024), rendered with the
+sequence's real broadcast camera. Generator: `tools/worldpose_lowpoly.py`, run in the `worldpose` conda env:
 
 ```bash
-python3 tools/lowpoly_athlete.py frame.png assets/athlete.svg --roi x0,y0,x1,y1 --upscale 4 --blur 0.003 --close 5 --preview preview.png
+/home/ding/miniconda/envs/worldpose/bin/python tools/worldpose_lowpoly.py \
+  --seq BRA_KOR_231503 --player 19 --frame 756 --cell 0.035 --out assets/athlete.svg
 ```
 
-Then update `aspect-ratio` of `.hero-art` in `index.html` to the SVG's width/height.
+Useful flags: `--cell` (mesh coarseness in metres, 0.03 fine … 0.05 coarse), `--dissolve` (0.5 more
+fragments … 1 none), `--yaw`, `--mirror`, `--seed`. After regenerating, set `aspect-ratio` of `.hero-art`
+in `index.html` to the SVG's width/height printed by the script.
+
+Other dynamic poses found by the scan (seq / player / frame): ARG_FRA_201902 15 1026 (sprint, arm
+extended), ARG_FRA_182345 14 90 (kick), NET_ARG_231259 15 990, FRA_MOR_231753 16 942.
+
+`tools/lowpoly_athlete.py` is the earlier silhouette-based generator (YOLO segmentation of a broadcast
+frame → Delaunay), kept for reference.
 
 ## To update later
 

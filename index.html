@@ -59,13 +59,13 @@
       display: flex; flex-direction: column; justify-content: center;
     }
     header > * { position: relative; z-index: 1; }
-    /* low-poly athlete (generated from a BFMD broadcast frame, tools/lowpoly_athlete.py) */
+    /* low-poly athlete: real WorldPose SMPL mesh of a World Cup player, tools/worldpose_lowpoly.py */
     .hero-art {
       position: absolute; z-index: 0; pointer-events: none;
-      right: 1%; bottom: -6%; height: 112%; aspect-ratio: 811 / 1180;
-      opacity: 0.55;
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 45%);
-              mask-image: linear-gradient(to right, transparent 0%, #000 45%);
+      right: -2%; bottom: -3%; height: 104%; aspect-ratio: 1142 / 1458;
+      opacity: 0.5;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 58%);
+              mask-image: linear-gradient(to right, transparent 0%, #000 58%);
     }
     .hero-art img { width: 100%; height: 100%; display: block; }
     /* faint court lines, bottom-left */
@@ -73,7 +73,7 @@
       position: absolute; z-index: 0; pointer-events: none;
       left: -4%; bottom: -12%; width: 46%; max-width: 560px; opacity: 0.16;
     }
-    @media (max-width: 1150px) { .hero-art { opacity: 0.42; } }
+    @media (max-width: 1150px) { .hero-art { opacity: 0.38; right: -8%; } }
     @media (max-width: 900px) {
       .hero-art { opacity: 0.28; right: -18%; height: 100%; -webkit-mask-image: none; mask-image: none; }
       .hero-court { opacity: 0.10; width: 70%; }
@@ -542,7 +542,8 @@
 <footer>
   ACCV 2026 Tutorial &middot; From Perception to Reasoning: Learning Video Understanding Through Sports<br>
   December 15, 2026 &middot; Osaka International Convention Center &middot;
-  <a href="https://accv2026.org/">accv2026.org</a>
+  <a href="https://accv2026.org/">accv2026.org</a><br>
+  <span style="opacity:0.75">Header artwork: wireframe rendering of a player mesh from the <a href="https://eth-ait.github.io/WorldPoseDataset/">WorldPose</a> dataset (ETH Zurich, ECCV 2024).</span>
 </footer>
 
 </body>
