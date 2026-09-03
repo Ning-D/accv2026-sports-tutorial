@@ -90,31 +90,15 @@
       -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 38%);
               mask-image: linear-gradient(to right, transparent 0%, #000 38%);
     }
-    .hero-art.keeper {
-      left: -1%; bottom: -2%; height: 62%; aspect-ratio: 2299 / 1591;
-      -webkit-mask-image: linear-gradient(to left, transparent 0%, #000 45%);
-              mask-image: linear-gradient(to left, transparent 0%, #000 45%);
-    }
     .hero-art.ball {
       right: 17%; bottom: 24%; height: 24%; aspect-ratio: 818 / 460; opacity: 0.6;
     }
-    /* faint goal frame behind the keeper */
-    .hero-goal {
-      position: absolute; z-index: 0; pointer-events: none;
-      left: -2%; bottom: -1%; width: 34%; max-width: 480px; opacity: 0.14;
-    }
     @media (max-width: 1150px) {
       .hero-art.kicker { opacity: 0.38; right: -8%; }
-      .hero-art.keeper { opacity: 0.38; height: 52%; }
-      .hero-art.ball { opacity: 0.45; height: 24%; right: 24%; }
-    }
-    @media (max-width: 900px) {
+      @media (max-width: 900px) {
       .hero-art.kicker { opacity: 0.26; right: -20%; height: 100%; -webkit-mask-image: none; mask-image: none; }
-      .hero-art.keeper { opacity: 0.22; height: 40%; left: -10%; -webkit-mask-image: none; mask-image: none; }
       .hero-art.ball { display: none; }
-      .hero-goal { opacity: 0.08; width: 60%; }
-    }
-
+  
     /* ── Sections ── */
     section { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
     section + section { border-top: 1px solid var(--g100); }
@@ -243,17 +227,6 @@
 
 <!-- ── Hero ── -->
 <header>
-  <svg class="hero-goal" viewBox="0 0 480 260" fill="none" stroke="#dff3d3" stroke-width="1.5" aria-hidden="true">
-    <!-- goal in perspective: posts, crossbar, side/top depth, faint net -->
-    <path d="M40 250 L40 60 L420 60 L420 250" stroke-width="3"/>
-    <path d="M40 60 L110 20 L470 20 L420 60 M470 20 L470 200 L420 250" stroke-width="2"/>
-    <g stroke-opacity="0.45" stroke-width="0.8">
-      <path d="M110 20 L110 200 M150 20 L150 200 M190 20 L190 200 M230 20 L230 200 M270 20 L270 200 M310 20 L310 200 M350 20 L350 200 M390 20 L390 200 M430 20 L430 200"/>
-      <path d="M110 50 L470 50 M110 80 L470 80 M110 110 L470 110 M110 140 L470 140 M110 170 L470 170 M110 200 L470 200"/>
-      <path d="M40 60 L110 20 M40 100 L110 60 M40 140 L110 100 M40 180 L110 140 M40 220 L110 180"/>
-    </g>
-  </svg>
-  <div class="hero-art keeper"><img src="assets/keeper.svg" alt=""></div>
   <div class="hero-art kicker"><img src="assets/kicker.svg" alt=""></div>
   <div class="hero-art ball"><img src="assets/ball.svg" alt=""></div>
   <div class="venue">ACCV 2026 Tutorial &mdash; Half-Day</div>
@@ -560,7 +533,7 @@
   ACCV 2026 Tutorial &middot; From Perception to Reasoning: Learning Video Understanding Through Sports<br>
   December 15, 2026 &middot; Osaka International Convention Center &middot;
   <a href="https://accv2026.org/">accv2026.org</a><br>
-  <span style="opacity:0.75">Header artwork: wireframe renderings of real player meshes (goalkeeper save, shot) from the <a href="https://eth-ait.github.io/WorldPoseDataset/">WorldPose</a> dataset (ETH Zurich, ECCV 2024).</span>
+  <span style="opacity:0.75">Header artwork: wireframe rendering of a real player mesh from the <a href="https://eth-ait.github.io/WorldPoseDataset/">WorldPose</a> dataset (ETH Zurich, ECCV 2024).</span>
 </footer>
 
 </body>
