@@ -51,9 +51,32 @@
 
     /* ── Hero ── */
     header {
+      position: relative; overflow: hidden;
       background: linear-gradient(135deg, var(--g900) 0%, var(--g800) 55%, var(--g600) 100%);
       color: #fff; text-align: center;
       padding: 4rem 1.5rem 3rem;
+      min-height: 520px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    header > * { position: relative; z-index: 1; }
+    /* low-poly athlete (generated from a BFMD broadcast frame, tools/lowpoly_athlete.py) */
+    .hero-art {
+      position: absolute; z-index: 0; pointer-events: none;
+      right: 1%; bottom: -6%; height: 112%; aspect-ratio: 811 / 1180;
+      opacity: 0.55;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 45%);
+              mask-image: linear-gradient(to right, transparent 0%, #000 45%);
+    }
+    .hero-art img { width: 100%; height: 100%; display: block; }
+    /* faint court lines, bottom-left */
+    .hero-court {
+      position: absolute; z-index: 0; pointer-events: none;
+      left: -4%; bottom: -12%; width: 46%; max-width: 560px; opacity: 0.16;
+    }
+    @media (max-width: 1150px) { .hero-art { opacity: 0.42; } }
+    @media (max-width: 900px) {
+      .hero-art { opacity: 0.28; right: -18%; height: 100%; -webkit-mask-image: none; mask-image: none; }
+      .hero-court { opacity: 0.10; width: 70%; }
     }
     header .venue {
       font-size: 1rem; font-weight: 600; letter-spacing: 0.1em;
@@ -61,9 +84,9 @@
     }
     header h1 {
       font-size: clamp(1.5rem, 4vw, 2.4rem); font-weight: 800; line-height: 1.25;
-      max-width: 860px; margin: 0 auto 1.5rem;
+      max-width: 1000px; margin: 0 auto 1.5rem;
     }
-    header h1 .subtitle { display: block; font-weight: 600; font-size: 0.82em; color: var(--g100); margin-top: 0.25em; }
+    header h1 .subtitle { display: block; }
     header .meta { color: var(--g200); font-size: 0.95rem; margin-bottom: 2rem; }
     header .meta strong { color: #fff; }
     .author-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin-bottom: 1.5rem; }
@@ -205,6 +228,17 @@
 
 <!-- ── Hero ── -->
 <header>
+  <svg class="hero-court" viewBox="0 0 560 300" fill="none" stroke="#dff3d3" stroke-width="1.6" aria-hidden="true">
+    <!-- badminton court in perspective: outer lines, center line, short/long service lines, net -->
+    <path d="M150 20 L410 20 L540 290 L20 290 Z"/>
+    <path d="M280 20 L280 290"/>
+    <path d="M172 70 L388 70"/>
+    <path d="M60 236 L500 236"/>
+    <path d="M120 80 L440 80 L520 250 L40 250 Z" stroke-opacity="0.6"/>
+    <path d="M100 150 L460 150" stroke-width="2.4"/>
+    <path d="M100 150 L100 110 M460 150 L460 110" stroke-width="2.4"/>
+  </svg>
+  <div class="hero-art"><img src="assets/athlete.svg" alt=""></div>
   <div class="venue">ACCV 2026 Tutorial &mdash; Half-Day</div>
   <h1>From Perception to Reasoning:<br><span class="subtitle">Learning Video Understanding Through Sports</span></h1>
   <div class="author-row">
