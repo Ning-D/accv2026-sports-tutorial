@@ -35,7 +35,8 @@ def smpl_vertices(seq, player, frame):
     if np.isnan(V).any():
         raise SystemExit("player not visible in this frame (NaN pose)")
     cam = np.load(f"{DATASET}/cameras/{seq}.npz")
-    return V, m.faces.astype(np.int64), cam["R"][frame], cam["t"][frame], cam["K"][frame]
+    go = z["global_orient"][player, frame].astype(np.float64)
+    return V, m.faces.astype(np.int64), cam["R"][frame], cam["t"][frame], cam["K"][frame], go
 
 
 def decimate(V, F, cell):
@@ -71,6 +72,9 @@ def main():
     ap.add_argument("--cell", type=float, default=0.035, help="clustering cell size in metres")
     ap.add_argument("--yaw", type=float, default=0.0, help="extra rotation of the body about the vertical axis (deg)")
     ap.add_argument("--mirror", action="store_true")
+    ap.add_argument("--face", type=float, default=None,
+                    help="auto-rotate so the body faces the camera; value = extra offset in deg (0 = frontal, 30 = three-quarter)")
+    ap.add_argument("--dir", choices=["right", "left", "up"], default="right", help="dissolve/fragment direction (screen space)")
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--color", default="#dff3d3")
     ap.add_argument("--dissolve", type=float, default=0.62, help="threshold 0..1 along the up-right axis; 1 = no dissolve")
@@ -79,7 +83,19 @@ def main():
     a = ap.parse_args()
     rng = np.random.default_rng(a.seed)
 
-    V, F, R, t, K = smpl_vertices(a.seq, a.player, a.frame)
+    V, F, R, t, K, go = smpl_vertices(a.seq, a.player, a.frame)
+    if a.face is not None:
+        # SMPL canonical body faces +z (template is y-up); WorldPose world is z-up, so the
+        # body's forward axis in world = R_root @ [0, 0, 1] with the y-up->z-up mapping baked in R_root.
+        from scipy.spatial.transform import Rotation as Rot
+        fwd = Rot.from_rotvec(go).apply([0, 0, 1.0])
+        fwd[2] = 0; fwd /= (np.linalg.norm(fwd) + 1e-9)
+        # camera viewing direction on the ground plane (world), from body toward camera
+        cam_pos = -R.T @ t
+        to_cam = cam_pos - V.mean(0); to_cam[2] = 0; to_cam /= (np.linalg.norm(to_cam) + 1e-9)
+        ang = math.degrees(math.atan2(to_cam[1], to_cam[0]) - math.atan2(fwd[1], fwd[0]))
+        a.yaw = a.yaw + ang + a.face
+        print(f"auto-facing: rotating body by {ang:.0f} deg (+{a.face:.0f} offset)")
     if a.yaw:
         c = V.mean(0)
         V = (rotz(a.yaw) @ (V - c).T).T + c
@@ -94,7 +110,8 @@ def main():
     F, tri, cen = F[front], tri[front], cen[front]
 
     # dissolve field along "up-right" in camera space (x right, y down)
-    d = np.array([1.0, -1.0, 0.0]) / math.sqrt(2)
+    d = {"right": np.array([1.0, -1.0, 0.0]), "left": np.array([-1.0, -1.0, 0.0]), "up": np.array([0.0, -1.0, 0.0])}[a.dir]
+    d = d / np.linalg.norm(d)
     proj = cen @ d
     lo, hi = proj.min(), proj.max()
     s = np.clip(((proj - lo) / (hi - lo + 1e-9) - a.dissolve) / max(1e-6, 1 - a.dissolve), 0, 1)
