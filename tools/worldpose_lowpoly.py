@@ -58,6 +58,28 @@ def decimate(V, F, cell):
     return P, inv[F][good][F2]
 
 
+def smpl_from_params(npz_path):
+    """Render arbitrary SMPL params (e.g. an HMR2 estimate): body_pose (23,3,3) or (69,),
+    global_orient (3,3) or (3,), optional betas. Uses a synthetic frontal camera 6 m away."""
+    import smplx
+    import torch
+    from scipy.spatial.transform import Rotation as Rot
+    z = np.load(npz_path)
+    bp = z["body_pose"]
+    bp = Rot.from_matrix(bp.reshape(-1, 3, 3)).as_rotvec().reshape(1, 69) if bp.ndim == 3 else bp.reshape(1, 69)
+    go = z["global_orient"]
+    go = Rot.from_matrix(go.reshape(3, 3)).as_rotvec().reshape(1, 3) if go.size == 9 else go.reshape(1, 3)
+    betas = z["betas"].reshape(1, 10) if "betas" in z.files else np.zeros((1, 10), np.float32)
+    m = smplx.create(BODY_MODELS, model_type="smpl", gender="neutral", batch_size=1)
+    with torch.no_grad():
+        out = m(betas=torch.tensor(betas, dtype=torch.float32), body_pose=torch.tensor(bp, dtype=torch.float32),
+                global_orient=torch.tensor(go, dtype=torch.float32))
+    V = out.vertices[0].numpy().astype(np.float64)
+    # params are in an OpenCV-style camera frame (y down, z forward): use identity camera, 6 m away
+    R = np.eye(3); t = np.array([0.0, 0.0, 6.0]); K = np.array([[1500.0, 0, 0], [0, 1500.0, 0], [0, 0, 1]])
+    return V, m.faces.astype(np.int64), R, t, K, go[0].astype(np.float64)
+
+
 def rotz(deg):
     a = math.radians(deg)
     return np.array([[math.cos(a), -math.sin(a), 0], [math.sin(a), math.cos(a), 0], [0, 0, 1]])
@@ -65,9 +87,10 @@ def rotz(deg):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--seq", required=True)
-    ap.add_argument("--player", type=int, required=True)
-    ap.add_argument("--frame", type=int, required=True)
+    ap.add_argument("--seq")
+    ap.add_argument("--player", type=int)
+    ap.add_argument("--frame", type=int)
+    ap.add_argument("--params", help="npz with SMPL body_pose/global_orient to render instead of a dataset frame")
     ap.add_argument("--out", required=True)
     ap.add_argument("--cell", type=float, default=0.035, help="clustering cell size in metres")
     ap.add_argument("--yaw", type=float, default=0.0, help="extra rotation of the body about the vertical axis (deg)")
@@ -83,8 +106,8 @@ def main():
     a = ap.parse_args()
     rng = np.random.default_rng(a.seed)
 
-    V, F, R, t, K, go = smpl_vertices(a.seq, a.player, a.frame)
-    if a.face is not None:
+    V, F, R, t, K, go = smpl_from_params(a.params) if a.params else smpl_vertices(a.seq, a.player, a.frame)
+    if a.face is not None and not a.params:
         # SMPL canonical body faces +z (template is y-up); WorldPose world is z-up, so the
         # body's forward axis in world = R_root @ [0, 0, 1] with the y-up->z-up mapping baked in R_root.
         from scipy.spatial.transform import Rotation as Rot
