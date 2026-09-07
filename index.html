@@ -103,6 +103,13 @@
       .hero-art.ball { display: none; }
     }
 
+    /* ── Demo video (below the hero) ── */
+    .demo { max-width: 1000px; margin: -2.2rem auto 0; padding: 0 1.5rem; position: relative; z-index: 2; }
+    .demo video { width: 100%; display: block; border-radius: 12px; box-shadow: 0 14px 40px rgba(0,0,0,0.35); background: #050d09; }
+    .demo .demo-caption { font-size: 0.85rem; color: var(--g700, #4a5f52); margin: 0.7rem 0.2rem 0; line-height: 1.5; }
+    .demo .demo-caption strong { color: var(--g900); }
+    .demo .demo-caption a { color: inherit; text-decoration: underline; }
+    .slides-note { margin-top: 2rem; }
     /* ── Sections ── */
     section { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem; }
     section + section { border-top: 1px solid var(--g100); }
@@ -257,6 +264,20 @@
     <a href="https://accv2026.org/tutorials/">ACCV 2026 tutorials page &rarr;</a>
   </div>
 </header>
+
+<!-- ── Demo video ── -->
+<div class="demo">
+  <video controls autoplay muted loop playsinline preload="metadata" poster="assets/demo/gsr_flyin_poster.jpg">
+    <source src="assets/demo/gsr_flyin_demo.mp4" type="video/mp4">
+  </video>
+  <p class="demo-caption">
+    <strong>From one broadcast camera to the full game state.</strong> A 3D fly-in lands on the real broadcast camera pose, then the
+    footage is overlaid with player tracking, 3D pose, pitch calibration, a top-down minimap and team shape, the stages this tutorial walks through.
+    Player poses and camera parameters are ground truth from the
+    <a href="https://eth-ait.github.io/WorldPoseDataset/">WorldPose dataset</a> (Jiang et al., ECCV 2024, ETH Zürich; FIFA World Cup 2022, Argentina vs Croatia);
+    rendering and overlays by the tutorial organizers.
+  </p>
+</div>
 
 <!-- ── Slides note ── -->
 <div class="slides-note">
