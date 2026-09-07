@@ -75,11 +75,9 @@
       background: linear-gradient(115deg, #ffd23f 0%, #ffd23f 38%, #fffbe6 47%, #ffe066 52%, #ffd23f 60%, #ffd23f 100%);
       background-size: 260% 100%; background-position: 120% 0;
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 14px rgba(255, 210, 63, 0.55));
-      animation: hl-sweep 3.2s ease-in-out infinite, hl-glow 3.2s ease-in-out infinite;
+      animation: hl-sweep 3.2s ease-in-out infinite;
     }
     @keyframes hl-sweep { 0%, 15% { background-position: 120% 0; } 55%, 100% { background-position: -40% 0; } }
-    @keyframes hl-glow { 0%, 15%, 100% { filter: drop-shadow(0 0 10px rgba(255, 210, 63, 0.45)); } 40% { filter: drop-shadow(0 0 22px rgba(255, 225, 120, 0.95)); } }
     @media (prefers-reduced-motion: reduce) { header h1 .hl { animation: none; } }
     header .meta { color: var(--g200); font-size: 0.95rem; margin-bottom: 2rem; }
     header .meta strong { color: #fff; }
