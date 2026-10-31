@@ -174,7 +174,8 @@
     .schedule-table tbody tr:nth-child(odd)  { background: #fff; }
     .schedule-table tbody tr.break-row { background: var(--g100); font-style: italic; }
     .schedule-table td { padding: 0.65rem 1rem; vertical-align: top; }
-    .schedule-table td.time { white-space: nowrap; font-weight: 600; color: var(--g700); width: 90px; }
+    .schedule-table td.time { white-space: nowrap; font-weight: 600; color: var(--g700); width: 110px; }
+    .schedule-table td.time .dur { display: block; font-weight: 400; font-size: 0.8rem; color: var(--muted); margin-top: 0.1rem; }
     .schedule-table td.presenter { white-space: nowrap; width: 140px; color: var(--muted); }
     .schedule-table ul { margin: 0.3rem 0 0 1.1rem; padding: 0; color: var(--muted); }
     .schedule-table li { margin-bottom: 0.15rem; }
@@ -319,12 +320,12 @@
     <div class="pillar">
       <div class="num">STAGE 1</div>
       <strong>Perception</strong>
-      <p>Player and ball detection and tracking, identification and re-ID, pose estimation, court and field calibration, top-down minimap mapping.</p>
+      <p>Player and ball detection and tracking, identification and re-ID, pose estimation, court and field calibration with top-down minimap mapping, and game state reconstruction.</p>
     </div>
     <div class="pillar">
       <div class="num">STAGE 2</div>
       <strong>Event Understanding</strong>
-      <p>Temporal action spotting, fine-grained actions and player interactions, and game state reconstruction from low-level signals.</p>
+      <p>Temporal action spotting and event segmentation, fine-grained actions and player interactions, spatio-temporal action localization and group activity recognition.</p>
     </div>
     <div class="pillar">
       <div class="num">STAGE 3</div>
@@ -367,15 +368,15 @@
 <!-- ── Schedule ── -->
 <section id="schedule">
   <h2>Schedule</h2>
-  <p>Half-day program (about 3.5 hours) in seven parts with one break. Exact clock times will be posted once the ACCV program is finalized.</p>
+  <p>Half-day program (3 hours, 9:00&ndash;12:00) in seven parts with one break. Clock times are indicative until the ACCV program is finalized.</p>
   <div class="table-wrap">
   <table class="schedule-table">
     <thead>
-      <tr><th>Duration</th><th>Topic</th><th>Presenter</th></tr>
+      <tr><th>Time</th><th>Topic</th><th>Presenter</th></tr>
     </thead>
     <tbody>
       <tr>
-        <td class="time">25 min</td>
+        <td class="time">9:00&ndash;9:20<span class="dur">20 min</span></td>
         <td>
           <span class="talk-title">Introduction: Why Sports Video?</span>
           <ul>
@@ -387,7 +388,7 @@
         <td class="presenter">Keisuke Fujii</td>
       </tr>
       <tr>
-        <td class="time">25 min</td>
+        <td class="time">9:20&ndash;9:45<span class="dur">25 min</span></td>
         <td>
           <span class="talk-title">Perception: Turning Pixels into Who-Is-Where</span>
           <ul>
@@ -395,28 +396,29 @@
             <li>Player identification and re-ID</li>
             <li>Player pose estimation</li>
             <li>Court and field calibration with top-down (minimap) mapping</li>
+            <li>Game state reconstruction (GSR): combining tracking, identity, and calibration into a full game state</li>
           </ul>
         </td>
         <td class="presenter">Ning Ding</td>
       </tr>
       <tr>
-        <td class="time">25 min</td>
+        <td class="time">9:45&ndash;10:10<span class="dur">25 min</span></td>
         <td>
           <span class="talk-title">Event Understanding: From Motion to Meaning</span>
           <ul>
             <li>Temporal action spotting and event segmentation</li>
             <li>Fine-grained action and player interaction modeling</li>
-            <li>Game state reconstruction (GSR)</li>
+            <li>Spatio-temporal action localization and group activity recognition</li>
           </ul>
         </td>
         <td class="presenter">Ning Ding</td>
       </tr>
       <tr>
-        <td class="time">25 min</td>
+        <td class="time">10:10&ndash;10:35<span class="dur">25 min</span></td>
         <td>
           <span class="talk-title">Vision-Language Modeling: Teaching Models to Commentate</span>
           <ul>
-            <li>Dense video captioning and play-by-play / live commentary generation</li>
+            <li>Dense video captioning and play-by-play commentary generation</li>
             <li>Visual and temporal grounding of players, events, and rules</li>
             <li>Sports video question answering and reasoning</li>
             <li>Highlight and game-report generation</li>
@@ -425,12 +427,12 @@
         <td class="presenter">Ning Ding</td>
       </tr>
       <tr class="break-row">
-        <td class="time">30 min</td>
+        <td class="time">10:35&ndash;10:55<span class="dur">20 min</span></td>
         <td>Break &mdash; attendees interact and discuss</td>
         <td class="presenter">&mdash;</td>
       </tr>
       <tr>
-        <td class="time">25 min</td>
+        <td class="time">10:55&ndash;11:20<span class="dur">25 min</span></td>
         <td>
           <span class="talk-title">Tactical Reasoning: Reading the Game, Calling the Next Play</span>
           <ul>
@@ -442,9 +444,9 @@
         <td class="presenter">Ning Ding</td>
       </tr>
       <tr>
-        <td class="time">25 min</td>
+        <td class="time">11:20&ndash;11:40<span class="dur">20 min</span></td>
         <td>
-          <span class="talk-title">Sports: The Stress-Test for General Video Understanding</span>
+          <span class="talk-title">From General Video Understanding to Sports: Past to Future</span>
           <ul>
             <li>Limitations of generic video models on sports videos</li>
             <li>Sports-driven solutions: tracking, action spotting, and trajectory forecasting</li>
@@ -454,14 +456,14 @@
         <td class="presenter">Toru Tamaki</td>
       </tr>
       <tr>
-        <td class="time">30 min</td>
+        <td class="time">11:40&ndash;12:00<span class="dur">20 min</span></td>
         <td>
           <span class="talk-title">Open Challenges: What Is Still Unsolved</span>
           <ul>
             <li>Data bottlenecks: scarce datasets and costly expert annotation</li>
             <li>Generalization across sports and domains</li>
             <li>Real-time systems and deployment</li>
-            <li>Open discussion and audience Q&amp;A</li>
+            <li>Open discussion and audience Q&amp;A (5&ndash;10 min)</li>
           </ul>
         </td>
         <td class="presenter">Keisuke Fujii</td>

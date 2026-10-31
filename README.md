@@ -43,6 +43,6 @@ NET_ARG_222226 18 1036 (all with `--mirror`). `tools/worldpose_scan.py` is the o
 
 ## To update later
 
-- Clock times: edit the `Duration` column in `#schedule` once the program is fixed.
+- Clock times: the `Time` column in `#schedule` follows the 2026-09-04 planning table (9:00–12:00, indicative); update once ACCV publishes the hours.
 - Slides / reading list / resource sheet: replace the `Coming soon` badges in `#materials` with links.
 - Presenter changes: `#schedule` and the hero `author-row`.
